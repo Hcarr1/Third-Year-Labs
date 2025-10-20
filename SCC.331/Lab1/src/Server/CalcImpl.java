@@ -32,18 +32,26 @@ public class CalcImpl implements ICalc {
     @Override
     public double sum2(Args args) throws RemoteException {
         // To be implemented
-        return 0.0;
+        return (args.a + args.b);
     }
 
     @Override
     public double product2(Args args) throws RemoteException {
         // To be implemented
-        return 0.0;
+        return (args.a * args.b);
     }
 
     @Override
     public double sqrt(double x) throws RemoteException, InvalidInputException {
         // To be implemented: make sure to use the invalid input exception
-        return 0.0;
+
+        try {
+            if (x < 0) {
+                throw new InvalidInputException("sqrt: x must be >= 0 (got " + x + ")");
+            }
+            return Math.sqrt(x);
+        } catch (InvalidInputException e) {
+            throw e;
+        }
     }
 }

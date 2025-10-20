@@ -20,7 +20,7 @@ public class Client {
             try {
                 System.out.println("factorial(7) = " + calc.factorial(7));
                 System.out.println("sqrt(9) = " + calc.sqrt(9));
-                System.out.println("sqrt(-4) = " + calc.sqrt(-4)); // should fail visibly
+                System.out.println("sqrt(4) = " + calc.sqrt(4)); // should fail visibly
             } catch (InvalidInputException e) {
                 System.out.println("Server.Server.InvalidInputException (expected): " + e.getMessage());
             }
