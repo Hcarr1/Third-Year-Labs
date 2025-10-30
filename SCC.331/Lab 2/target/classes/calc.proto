@@ -1,0 +1,26 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "example.calc";
+
+service Calc {
+  rpc Factorial (FactRequest)   returns (FactResponse)   {}
+  rpc Sum       (SumRequest)    returns (SumResponse)    {}
+  rpc Product   (ProductRequest) returns (ProductResponse) {}
+  rpc Sqrt      (SqrtRequest)    returns (SqrtResponse)    {}
+  rpc Factorize (FactorizeRequest)   returns (stream FactorizeResponse)   {}
+}
+
+message FactRequest  { int32  n       = 1; }         // use small n to avoid overflow
+message FactResponse { int64  result  = 1; }         // int64 to allow a bit more range
+
+message SumRequest   { double a       = 1; double b = 2; }
+message SumResponse  { double result  = 1; }
+
+message ProductRequest { double a       = 1; double b = 2; }
+message ProductResponse { double result  = 1; }
+
+message SqrtRequest  { double x       = 1; }
+message SqrtResponse { double result  = 1; }
+
+message FactorizeRequest  { int32 n = 1; }
+message FactorizeResponse { int64 factor = 1; }

@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion>
+  <groupId>example</groupId><artifactId>grpc-calculator</artifactId><version>1.0</version>
+
+  <properties>
+    <!-- Java version for compilation -->
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+
+    <!-- Versions that work well together -->
+    <!-- Protobuf 4.32.x pairs with protoc 32.x -->
+    <protobuf.version>4.32.0</protobuf.version>
+    <!-- Recent stable gRPC -->
+    <grpc.version>1.75.0</grpc.version>
+    <!-- Helps Maven detect your OS/arch to download the right binaries -->
+    <os.plugin.version>1.7.1</os.plugin.version>
+  </properties>
+
+  <build>
+    <extensions>
+      <!-- Exposes ${os.detected.classifier}, e.g., linux-x86_64 -->
+      <extension>
+        <groupId>kr.motd.maven</groupId><artifactId>os-maven-plugin</artifactId><version>${os.plugin.version}</version>
+      </extension>
+    </extensions>
+
+    <plugins>
+      <!-- Generate Java from proto/calc.proto (messages + gRPC stubs) -->
+      <plugin>
+        <groupId>org.xolstice.maven.plugins</groupId>
+        <artifactId>protobuf-maven-plugin</artifactId>
+        <version>0.6.1</version>
+        <configuration>
+          <protoSourceRoot>${project.basedir}/proto</protoSourceRoot>
+
+          <!-- Maven downloads the protoc compiler for your OS at this version -->
+          <protocArtifact>
+            com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}
+          </protocArtifact>
+
+          <!-- Add the gRPC Java code generator -->
+          <pluginId>grpc-java</pluginId>
+          <pluginArtifact>
+            io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}
+          </pluginArtifact>
+        </configuration>
+        <executions>
+          <!-- 'compile' generates Protobuf message classes; 'compile-custom' generates gRPC stubs -->
+          <execution><goals><goal>compile</goal><goal>compile-custom</goal></goals></execution>
+        </executions>
+      </plugin>
+
+      <!-- Lets you run main classes via: mvn -Dexec.mainClass=... exec:java -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- gRPC transport (Netty), stubs, and Protobuf runtime -->
+    <dependency><groupId>io.grpc</groupId><artifactId>grpc-netty-shaded</artifactId><version>${grpc.version}</version></dependency>
+    <dependency><groupId>io.grpc</groupId><artifactId>grpc-protobuf</artifactId><version>${grpc.version}</version></dependency>
+    <dependency><groupId>io.grpc</groupId><artifactId>grpc-stub</artifactId><version>${grpc.version}</version></dependency>
+    <dependency><groupId>com.google.protobuf</groupId><artifactId>protobuf-java</artifactId><version>${protobuf.version}</version></dependency>
+    <!-- Sometimes generated code references javax.annotation.Generated -->
+    <dependency><groupId>javax.annotation</groupId><artifactId>javax.annotation-api</artifactId><version>1.3.2</version><scope>provided</scope></dependency>
+  </dependencies>
+</project>
+
